@@ -7,10 +7,13 @@ A GO and MongoDB REST API using gorrilla/mux for routing
 - GCC Compiler [ WinG W for windows ]
 
 ### Install Go packages
-- Mux ``` go get "github.com/gorilla/mux" ```
+- Mux
+ ```
+ go get "github.com/gorilla/mux"
+ ```
 - MongoDB Driver ` go.mongodb.org/mongo-driver/mongo `
 
 
 ### Documentation
 
-[title](https://www.mongodb.com/blog/post/mongodb-go-driver-tutorial)
+[MongoDB Driver Docs](https://www.mongodb.com/blog/post/mongodb-go-driver-tutorial)
