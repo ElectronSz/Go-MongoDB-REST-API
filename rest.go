@@ -1,3 +1,9 @@
+/*
+Author: ElectronSz
+Github: https://github.com/ElectronSz
+Date: 2019-11-23
+
+*/
 package main
 
 import (
@@ -8,25 +14,26 @@ import (
 	"log"
 	"net/http"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var client *mongo.Client
 
-type event struct {
+type todo struct {
 	ID          string `json:"ID"`
 	Title       string `json:"Title"`
 	Description string `json:"Description"`
+	Status      bool   `json:"Status"`
 }
 
-type allEvents []event
+type allTodos []todo
 
-var events = allEvents{}
+var todos = allTodos{}
 
-func createEvent(w http.ResponseWriter, r *http.Request) {
+func createTodo(w http.ResponseWriter, r *http.Request) {
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
 	// Connect to MongoDB
@@ -45,9 +52,9 @@ func createEvent(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Connected to MongoDB!")
 
-	collection := client.Database("Api").Collection("events")
+	collection := client.Database("Api").Collection("todos")
 
-	var newEvent event
+	var newTodo todo
 
 	//reuest body and error
 	reqBody, err := ioutil.ReadAll(r.Body)
@@ -57,10 +64,9 @@ func createEvent(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
 	}
 
-	json.Unmarshal(reqBody, &newEvent)
-	//events = append(events, newEvent)
+	json.Unmarshal(reqBody, &newTodo)
 
-	av := newEvent
+	av := newTodo
 
 	insertResult, err := collection.InsertOne(context.TODO(), av)
 	if err != nil {
@@ -83,7 +89,7 @@ func createEvent(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Connection to MongoDB closed.")
 }
 
-func getOneEvent(w http.ResponseWriter, r *http.Request) {
+func getOneTodo(w http.ResponseWriter, r *http.Request) {
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
 	// Connect to MongoDB
@@ -102,21 +108,21 @@ func getOneEvent(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Connected to MongoDB!")
 
-	collection := client.Database("Api").Collection("events")
+	collection := client.Database("Api").Collection("todos")
 
 	/******************************************/
-	eventID := mux.Vars(r)["id"]
+	todoID := mux.Vars(r)["id"]
 
-	var oneEvent event
-	filter := bson.D{{"id", eventID}}
+	var oneTodo todo
+	filter := bson.D{{"id", todoID}}
 
-	err = collection.FindOne(context.TODO(), filter).Decode(&oneEvent)
+	err = collection.FindOne(context.TODO(), filter).Decode(&oneTodo)
 	if err != nil {
-		log.Fatal(err)
+		json.NewEncoder(w).Encode("Di not find any todo")
 	}
 
-	fmt.Printf("Found a single document: %+v\n", oneEvent)
-	json.NewEncoder(w).Encode(oneEvent)
+	fmt.Printf("Found a single document: %+v\n", oneTodo)
+	json.NewEncoder(w).Encode(oneTodo)
 
 	/*******************************************************/
 	err = client.Disconnect(context.TODO())
@@ -127,7 +133,7 @@ func getOneEvent(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Connection to MongoDB closed.")
 
 }
-func getAllEvents(w http.ResponseWriter, r *http.Request) {
+func getAllTodos(w http.ResponseWriter, r *http.Request) {
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
 	// Connect to MongoDB
@@ -146,13 +152,13 @@ func getAllEvents(w http.ResponseWriter, r *http.Request) {
 	//
 	fmt.Println("Connected to MongoDB!")
 
-	collection := client.Database("Api").Collection("events")
+	collection := client.Database("Api").Collection("todos")
 
 	/******************************************/
 	findOptions := options.Find()
 	//findOptions.SetLimit(2)
 
-	var results []*event
+	var results []*todo
 
 	cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
@@ -162,7 +168,7 @@ func getAllEvents(w http.ResponseWriter, r *http.Request) {
 	for cur.Next(context.TODO()) {
 
 		// create a value into which the single document can be decoded
-		var elem event
+		var elem todo
 		err := cur.Decode(&elem)
 		if err != nil {
 			log.Fatal(err)
@@ -190,7 +196,7 @@ func getAllEvents(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("Connection to MongoDB closed.")
 }
-func updateEvent(w http.ResponseWriter, r *http.Request) {
+func updateTodo(w http.ResponseWriter, r *http.Request) {
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
 	// Connect to MongoDB
@@ -209,25 +215,23 @@ func updateEvent(w http.ResponseWriter, r *http.Request) {
 	//
 	fmt.Println("Connected to MongoDB!")
 
-	collection := client.Database("Api").Collection("events")
+	collection := client.Database("Api").Collection("todos")
 
 	/************************************************************/
 
-	eventID := mux.Vars(r)["id"]
+	todoID := mux.Vars(r)["id"]
 
-	var updatedEvent event
+	var updatedTodo todo
 
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
 	}
-	json.Unmarshal(reqBody, &updatedEvent)
-
-	//fmt.Println(updatedEvent)
+	json.Unmarshal(reqBody, &updatedTodo)
 
 	//opts := options.Update().SetUpsert(true)
-	filter := bson.D{{"id", eventID}}
-	update := bson.D{{"$set", bson.D{{"title", updatedEvent.Title}, {"description", updatedEvent.Description}}}}
+	filter := bson.D{{"id", todoID}}
+	update := bson.D{{"$set", bson.D{{"title", updatedTodo.Title}, {"description", updatedTodo.Description}, {"status", updatedTodo.Status}}}}
 
 	result, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
@@ -235,7 +239,7 @@ func updateEvent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if result.MatchedCount != 0 {
-		fmt.Println("matched and replaced an existing document with ID %v\n", result.UpsertedID)
+		fmt.Println("matched and replaced an existing document with ID %v\n", result.ModifiedCount)
 		json.NewEncoder(w).Encode(result)
 		return
 	}
@@ -258,7 +262,7 @@ func updateEvent(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Connection to MongoDB closed.")
 }
 
-func deleteEvent(w http.ResponseWriter, r *http.Request) {
+func deleteTodo(w http.ResponseWriter, r *http.Request) {
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
 	// Connect to MongoDB
@@ -277,12 +281,12 @@ func deleteEvent(w http.ResponseWriter, r *http.Request) {
 	//
 	fmt.Println("Connected to MongoDB!")
 
-	collection := client.Database("Api").Collection("events")
+	collection := client.Database("Api").Collection("todos")
 
 	/******************************************/
-	eventID := mux.Vars(r)["id"]
+	todoID := mux.Vars(r)["id"]
 
-	filter := bson.D{{"id", eventID}}
+	filter := bson.D{{"id", todoID}}
 
 	deleteResult, err := collection.DeleteOne(context.TODO(), filter)
 	if err != nil {
@@ -291,7 +295,6 @@ func deleteEvent(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Deleted %v documents in the events collection\n", deleteResult.DeletedCount)
 
 	json.NewEncoder(w).Encode(deleteResult)
-	//fmt.Fprintf(w, eventID)
 
 	/*******************************************************/
 	err = client.Disconnect(context.TODO())
@@ -309,11 +312,11 @@ func homeLink(w http.ResponseWriter, r *http.Request) {
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)
-	router.HandleFunc("/event", createEvent).Methods("POST")
-	router.HandleFunc("/events", getAllEvents).Methods("GET")
-	router.HandleFunc("/events/{id}", getOneEvent).Methods("GET")
-	router.HandleFunc("/events/{id}", updateEvent).Methods("PATCH")
-	router.HandleFunc("/events/{id}", deleteEvent).Methods("DELETE")
+	router.HandleFunc("/todo", createTodo).Methods("POST")
+	router.HandleFunc("/todos", getAllTodos).Methods("GET")
+	router.HandleFunc("/todos/{id}", getOneTodo).Methods("GET")
+	router.HandleFunc("/todos/{id}", updateTodo).Methods("PATCH")
+	router.HandleFunc("/todos/{id}", deleteTodo).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
