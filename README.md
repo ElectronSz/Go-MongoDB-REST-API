@@ -21,6 +21,7 @@ go.mongodb.org/mongo-driver/mongo
 
 [MongoDB Driver Docs](https://www.mongodb.com/blog/post/mongodb-go-driver-tutorial) [GoLang Docs](https://golang.org/doc/)
 
+---
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/ElectronSz/Go-MongoDB-REST-API)     ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/ElectronSz/Go-MongoDB-REST-API)     ![GitHub](https://img.shields.io/github/license/ElectronSz/Go-MongoDB-REST-API)  ![Coder](https://img.shields.io/badge/Coder-AslaV3-green)
 
