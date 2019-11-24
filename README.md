@@ -11,9 +11,15 @@ A GO and MongoDB REST API using gorrilla/mux for routing
  ```
  go get "github.com/gorilla/mux"
  ```
-- MongoDB Driver ` go.mongodb.org/mongo-driver/mongo `
+- MongoDB Driver 
+``` 
+go.mongodb.org/mongo-driver/mongo 
+```
 
 
 ### Documentation
 
-[MongoDB Driver Docs](https://www.mongodb.com/blog/post/mongodb-go-driver-tutorial)
+[MongoDB Driver Docs](https://www.mongodb.com/blog/post/mongodb-go-driver-tutorial) [GoLang Docs](https://golang.org/doc/)
+
+
+![GitHub repo size](https://img.shields.io/github/repo-size/ElectronSz/Go-MongoDB-REST-API?style=for-the-badge)
