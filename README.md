@@ -23,3 +23,8 @@ go.mongodb.org/mongo-driver/mongo
 
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/ElectronSz/Go-MongoDB-REST-API)     ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/ElectronSz/Go-MongoDB-REST-API)     ![GitHub](https://img.shields.io/github/license/ElectronSz/Go-MongoDB-REST-API)
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/ElectronSz/Go-MongoDB-REST-API/badge.svg?style=beer-square)](https://beerpay.io/ElectronSz/Go-MongoDB-REST-API)  [![Beerpay](https://beerpay.io/ElectronSz/Go-MongoDB-REST-API/make-wish.svg?style=flat-square)](https://beerpay.io/ElectronSz/Go-MongoDB-REST-API?focus=wish)
