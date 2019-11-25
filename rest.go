@@ -34,7 +34,11 @@ type allTodos []todo
 var todos = allTodos{}
 
 func createTodo(w http.ResponseWriter, r *http.Request) {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	credential := options.Credential{
+		Username: "api",
+		Password: "api1008",
+	}
+	clientOptions := options.Client().ApplyURI("mongodb://167.71.60.107:27017").SetAuth(credential)
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -90,7 +94,11 @@ func createTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func getOneTodo(w http.ResponseWriter, r *http.Request) {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	credential := options.Credential{
+		Username: "api",
+		Password: "api1008",
+	}
+	clientOptions := options.Client().ApplyURI("mongodb://167.71.60.107:27017").SetAuth(credential)
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -134,8 +142,11 @@ func getOneTodo(w http.ResponseWriter, r *http.Request) {
 
 }
 func getAllTodos(w http.ResponseWriter, r *http.Request) {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-
+	credential := options.Credential{
+		Username: "api",
+		Password: "api1008",
+	}
+	clientOptions := options.Client().ApplyURI("mongodb://167.71.60.107:27017").SetAuth(credential)
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
@@ -197,8 +208,11 @@ func getAllTodos(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Connection to MongoDB closed.")
 }
 func updateTodo(w http.ResponseWriter, r *http.Request) {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-
+	credential := options.Credential{
+		Username: "api",
+		Password: "api1008",
+	}
+	clientOptions := options.Client().ApplyURI("mongodb://167.71.60.107:27017").SetAuth(credential)
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
@@ -263,8 +277,11 @@ func updateTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteTodo(w http.ResponseWriter, r *http.Request) {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-
+	credential := options.Credential{
+		Username: "api",
+		Password: "api1008",
+	}
+	clientOptions := options.Client().ApplyURI("mongodb://167.71.60.107:27017").SetAuth(credential)
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
